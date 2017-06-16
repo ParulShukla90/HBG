@@ -1,0 +1,28 @@
+<h4 ng-if="pending.hasOrders === false">
+  There are no orders in the queue. Select the Order History tab to see what has been submitted in the last 90 days.
+</h4>
+
+<table class="po-header" ng-if="pending.hasOrders === true">
+  <tbody>
+  <tr>
+    <td>PO No.:</td>
+    <td ng-bind="hasPendingOrders ? poDetails.purchaseOrderNumber : 'In Progress'" class="value"></td>
+  </tr>
+  <tr>
+    <td>For Submission On:</td>
+    <td class="value">{{poDetails.scheduledPOSubmissionDate | date:'LLLL dd, yyyy'}}</td>
+  </tr>
+  </tbody>
+</table>
+
+<order-data-grid data="data" selection="selection" enable-order-rejection-feature="enableOrderRejectionFeature"
+                 grid-type="pending"></order-data-grid>
+
+<div class="pull-right text-right">
+  <button ng-if="enableOrderRejectionFeature" title="You must select some orders in order to reject them"
+          ng-disabled="selection.getSelectedCount() === 0"
+          class="btn btn-primary"
+          id="reject-orders-button"
+          ng-click="pending.initRejection(selection.getSelectedRows())">Reject Selected Orders
+  </button>
+</div>

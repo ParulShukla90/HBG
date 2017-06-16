@@ -1,0 +1,154 @@
+<div  >
+  <div>
+    <h1>Pre-allocation criteria</h1>
+    <div class="input-group col-md-6" style="float:left">
+      <span class="input-group-btn" ng-init="currDetails.status = 1">
+        <label >Pre-allocation record status : </label>
+        <button class="btn btn-default" ng-class="{'btn-success': active ==true}" ng-click="active=true;changeData()">
+          Active
+        </button>
+        <button class="btn btn-default" ng-class="{'btn-warning': active == false}" ng-click="active=false;changeData()">
+          In-active
+        </button>
+      </span>
+    </div>
+    <button class="btn btn-success pull-right" data-toggle="modal" data-target="#step1"><i class="glyphicon glyphicon-plus "></i> Add</button>
+  </div>
+  
+    <div class="clearfix"></div>
+    <div class="row margin-top-20">
+      <div id="grid1" ui-grid="gridOptionsFT" ui-grid-exporter ui-grid-pagination class="grid"></div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="step1" class="modal  fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create Pre-allocation Criteria</h4>
+      </div>
+      <form class="inner-form" name="addForm">
+      <div class="modal-body">
+        <div class="row" style="padding-left: 20px;margin-bottom: 30px;">
+            
+              <div class="form-group"> 
+                <span>Select selection criteria </span> 
+                <label>
+                  <input  name="type" placeholder="Email" type="radio" group="a" value="family" ng-model="searchType" > Family tree
+                </label>
+                <label>
+                  <input  name="type" placeholder="Email" type="radio" group="a" value="item" ng-model="searchType"> Item 
+                </label>
+              </div>
+              <div ng-if="searchType == 'family'">
+                <div class="col-md-4">
+                  <label for="owner">Owner</label>
+                  <angucomplete-alt id="owner"  placeholder="Search owners" pause="100" selected-object="getRG" match-class="highlight" local-data="otc.owners" search-fields="title,code" title-field="title"  description-field="code" minlength="0" input-class="form-control" input-changed="getRG" field-required="true"/>
+                </div>
+                <div class="col-md-4">
+                  <label for="rg">Reporting Group</label>
+                  <angucomplete-alt id="rg" placeholder="Search Registeration Group" pause="100" selected-object="getCat1" local-data="otc.rg" search-fields="title,code" title-field="title"  description-field="code" minlength="0" input-class="form-control" disable-input="!ft.owner"/>
+                </div>
+                <div class="col-md-4">
+                  <label for="cat1">Category 1</label>
+                  <angucomplete-alt id="cat1" placeholder="Search category 1" pause="100" selected-object="getCat2" local-data="otc.cat1" search-fields="title,code" title-field="title"  description-field="code" minlength="0" input-class="form-control" disable-input="!ft.rg"/>
+                </div>
+                <div class="col-md-4">
+                  <label for="cat2">Category 2</label>
+                  <angucomplete-alt id="cat2" placeholder="Search category 2" pause="100" selected-object="ft.cat2" local-data="otc.cat2" search-fields="title,code" title-field="title"  description-field="code" minlength="0" input-class="form-control" disable-input="!ft.cat1"/>
+                </div>
+                <div class="col-md-4">
+                  <label for="form">Format</label>
+                  <angucomplete-alt id="form" placeholder="Search format" pause="100" selected-object="getSubForm" local-data="otc.form" search-fields="title,code" title-field="title"  description-field="code" minlength="0" input-class="form-control"  disable-input="!ft.cat2"/>
+                </div>
+                <div class="col-md-4">
+                  <label for="subForm">Sub-format</label>
+                  <angucomplete-alt id="subForm" placeholder="Search sub format" pause="100" selected-object="ft.subForm" local-data="otc.subForm" search-fields="title,code" title-field="title"  description-field="code" minlength="0" input-class="form-control" disable-input="!ft.form"/>
+                </div>
+              </div>
+              <div ng-if="searchType == 'item'">
+                <div class="col-md-4">
+                  <label for="owner">Item Code</label>
+                  <angucomplete-alt id="owner" placeholder="Search items" pause="100" selected-object="setItem" match-class="highlight" local-data="otc.items" search-fields="title,code" title-field="title"  description-field="code" minlength="0" input-class="form-control" field-required="true" />
+                </div>
+                <div class="col-md-12" style="margin-top:20px;">
+                  <table class="table table-striped" ng-if="selectedItem">
+                    <tr>
+                      <th> Item Code</th>
+                      <th>Title</th>
+                      <th>ISBN</th>
+                      <th>Short Title</th>
+                    </tr>
+                    <tr>
+                      <td>{{selectedItem.code}}</td>
+                      <td>{{selectedItem.title}}</td>
+                      <td>{{selectedItem.isbn}}</td>
+                      <td>{{selectedItem.shortTitle}}</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-12 padding0">
+              <h4 class="margin-top-20">Billing Information</h4>
+              <div class="col-md-4">
+                <label for="billTo">Bill To</label>
+                <angucomplete-alt name="billTo" id="billTo" placeholder="Search billing acount" pause="100" selected-object="newRec.billTo" match-class="highlight" local-data="otc.billTo" search-fields="title,code" title-field="title"  description-field="code" minlength="0" input-class="form-control" field-required="true"/>
+              </div>
+              <div class="clearfix"></div>
+              <h4 class="margin-top-20">Pre-allocation Quantity</h4>
+              <div class="col-md-4">
+                <label for="defaultQty">Default Quantity</label>
+                <input type="text" id="defaultQty" name="defQty" ng-model="newRec.defaultQty" class="form-control" numbers-only  custom-max-length="10" required/>
+              </div>
+              <div class="col-md-4">
+                <label for="usableMin">Usable minimum</label>
+                <input name="usableMin" ng-model="newRec.usableMin" type="text" id="usableMin" class="form-control" numbers-only custom-max-length="10" required/>
+              </div>
+              <div class="col-md-4">
+                <label for="percentFallsBelow">% If falls below*</label>
+                <input name="percentFallsBelow" ng-model="newRec.percentFallsBelow" type="text" id="percentFallsBelow" class="form-control"  numbers-only custom-max-length="10" required/>
+              </div>
+              <div class="col-md-4">
+                <label for="expDate">Expiration Date*</label>
+                <p class="input-group">
+                  <input name="expDate"  id="expDate" type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="newRec.expDate" is-open="popup.open" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"  required/>
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="popup.open = !popup.open"><i class="glyphicon glyphicon-calendar"></i></button>
+                  </span>
+                </p>
+              </div>
+              <div class="col-md-12">
+                <div class="col-md-4">
+                  <label for="pr">Pre-release </label>
+                  <input type="checkbox" id="pr" ng-model="newRec.pr"/>
+                </div>
+                <div class="col-md-4">
+                  <label for="nyp">Override NYP </label>
+                  <input type="checkbox" id="nyp" ng-model="newRec.nyp"/>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            <!--</form>-->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="clearData()">Close</button>
+        <button ng-disabled="addForm.$invalid" type="button" ng-disabled="step2.$invalid" class="btn btn-success" data-dismiss="modal" ng-click="saveData()">Save</button>
+        <button ng-disabled="addForm.$invalid" type="button" ng-disabled="step2.$invalid" class="btn btn-info" ng-click="saveData()">Save & add another</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Modal End-->
+<script type="text/ng-template" id="abc">
+<div class="angucomplete-row ng-scope angucomplete-selected-row" ng-repeat="result in results" ng-click="selectResult(result)" ng-mouseenter="hoverRow($index)" ng-class="{'angucomplete-selected-row': $index == currentIndex}" style=""> 
+  <div class="angucomplete-title ng-binding ng-scope" ng-if="matchClass" ng-bind-html="result.title"></div>
+  <div ng-if="matchClass &amp;&amp; result.description &amp;&amp; result.description != ''" class="angucomplete-description ng-binding ng-scope" ng-bind-html="result.description">
+  </div>
+</div>
+</script>
